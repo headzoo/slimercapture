@@ -12,6 +12,21 @@ class SlimerJS
     protected $slimerjsPath;
 
     /**
+     * @var string
+     */
+    protected $lastCommand;
+
+    /**
+     * @var array
+     */
+    protected $lastOutput;
+
+    /**
+     * @var int
+     */
+    protected $lastReturnCode;
+
+    /**
      * Constructor
      *
      * @param string $slimerjsPath
@@ -46,7 +61,7 @@ class SlimerJS
         $width      = escapeshellarg($width);
         $imageFile  = escapeshellarg($imageFile);
         $scriptPath = escapeshellarg(realpath(__DIR__ . '/commands/capture.js'));
-        $command    = sprintf(
+        $this->lastCommand = sprintf(
             '%s -headless %s %s %s %s 2>&1',
             escapeshellcmd($this->slimerjsPath),
             $scriptPath,
@@ -55,11 +70,37 @@ class SlimerJS
             $width
         );
 
-        exec($command, $output, $returnCode);
-        if ($returnCode !== 0) {
-            throw new \Exception($returnCode);
+        $this->lastOutput     = [];
+        $this->lastReturnCode = 0;
+        exec($this->lastCommand, $this->lastOutput, $this->lastReturnCode);
+        if ($this->lastReturnCode !== 0) {
+            throw new \Exception($this->lastReturnCode);
         }
 
         return true;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastCommand()
+    {
+        return $this->lastCommand;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLastOutput()
+    {
+        return $this->lastOutput;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLastReturnCode()
+    {
+        return $this->lastReturnCode;
     }
 }
