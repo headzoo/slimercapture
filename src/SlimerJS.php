@@ -14,6 +14,11 @@ class SlimerJS
     /**
      * @var string
      */
+    protected $firefoxPath;
+
+    /**
+     * @var string
+     */
     protected $lastCommand;
 
     /**
@@ -30,10 +35,12 @@ class SlimerJS
      * Constructor
      *
      * @param string $slimerjsPath
+     * @param string $firefoxPath
      */
-    public function __construct($slimerjsPath = 'slimerjs')
+    public function __construct($slimerjsPath = 'slimerjs', $firefoxPath = '/usr/bin/firefox')
     {
         $this->setSlimerJSPath($slimerjsPath);
+        $this->setFirefoxPath($firefoxPath);
     }
 
     /**
@@ -44,6 +51,17 @@ class SlimerJS
     public function setSlimerJSPath($slimerjsPath)
     {
         $this->slimerjsPath = $slimerjsPath;
+        return $this;
+    }
+
+    /**
+     * @param string $firefoxPath
+     *
+     * @return $this
+     */
+    public function setFirefoxPath($firefoxPath)
+    {
+        $this->firefoxPath = $firefoxPath;
         return $this;
     }
 
@@ -62,7 +80,8 @@ class SlimerJS
         $imageFile  = escapeshellarg($imageFile);
         $scriptPath = escapeshellarg(realpath(__DIR__ . '/commands/capture.js'));
         $this->lastCommand = sprintf(
-            'SLIMERJSLAUNCHER=/var/www/slimerjs-1.0.0/firefox/firefox %s -headless %s %s %s %s 2>&1',
+            'SLIMERJSLAUNCHER=%s %s -headless %s %s %s %s 2>&1',
+            $this->firefoxPath,
             escapeshellcmd($this->slimerjsPath),
             $scriptPath,
             $url,
