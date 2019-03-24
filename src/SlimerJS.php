@@ -57,7 +57,7 @@ class SlimerJS
 
         exec($command, $output, $returnCode);
         if ($returnCode !== 0) {
-            throw new \Exception(array_pop($output));
+            throw new \Exception($returnCode);
         }
 
         return true;
