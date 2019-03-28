@@ -22,22 +22,23 @@ page.open(url, function(status) {
     page.includeJs('https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js', function() {
         var sections = page.evaluate(function() {
             var sections  = [];
-            // var variables = [];
+            var variables = [];
 
             $('body').find('.block-section').each(function() {
                 var el = $(this);
 
-                var variable = el.attr('data-style');
-                // if (variable && variables.indexOf(variable) === -1) {
-                    // variables.push(variable);
+                // var variable = el.attr('data-style');
+                var top = parseInt(el.offset().top, 10);
+                if (top && variables.indexOf(top) === -1) {
+                    variables.push(top);
                     sections.push({
                         width:  el.width(),
                         height: el.height(),
                         left:   parseInt(el.offset().left, 10),
-                        top:    parseInt(el.offset().top, 10),
+                        top:    top,
                         html:   el.prop('outerHTML')
                     });
-                // }
+                }
             });
 
             return sections;
@@ -45,22 +46,23 @@ page.open(url, function(status) {
 
         var components = page.evaluate(function() {
             var components = [];
-            // var variables  = [];
+            var variables  = [];
 
             $('body').find('.block-component').each(function() {
                 var el = $(this);
 
-                var variable = el.attr('data-style');
-                // if (variable && variables.indexOf(variable) === -1) {
-                    // variables.push(variable);
+                // var variable = el.attr('data-style');
+                var top = parseInt(el.offset().top, 10);
+                if (top && variables.indexOf(top) === -1) {
+                    variables.push(top);
                     components.push({
                         width:  el.width(),
                         height: el.height(),
                         left:   parseInt(el.offset().left, 10),
-                        top:    parseInt(el.offset().top, 10),
+                        top:    top,
                         html:   el.prop('outerHTML')
                     });
-                // }
+                }
             });
 
             return components;
