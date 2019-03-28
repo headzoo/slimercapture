@@ -27,10 +27,8 @@ page.open(url, function(status) {
             $('body').find('.block-section').each(function() {
                 var el = $(this);
 
-                var variable = el.attr('data-style');
-                if (!variable) {
-                    variable = el.prop('outerHTML');
-                }
+                // var variable = el.attr('data-style');
+                var variable = el.prop('outerHTML');
                 if (variables.indexOf(variable) === -1) {
                     variables.push(variable);
                     sections.push({
@@ -38,7 +36,7 @@ page.open(url, function(status) {
                         height: el.height(),
                         left:   parseInt(el.offset().left, 10),
                         top:    parseInt(el.offset().top, 10),
-                        html:   el.prop('outerHTML')
+                        html:   variable
                     });
                 }
             });
@@ -53,10 +51,8 @@ page.open(url, function(status) {
             $('body').find('.block-component').each(function() {
                 var el = $(this);
 
-                var variable = el.attr('data-style');
-                if (!variable) {
-                    variable = el.prop('outerHTML');
-                }
+                // var variable = el.attr('data-style');
+                var variable = el.prop('outerHTML');
                 if (variables.indexOf(variable) === -1) {
                     variables.push(variable);
                     components.push({
@@ -64,7 +60,7 @@ page.open(url, function(status) {
                         height: el.height(),
                         left:   parseInt(el.offset().left, 10),
                         top:    parseInt(el.offset().top, 10),
-                        html:   el.prop('outerHTML')
+                        html:   variable
                     });
                 }
             });
