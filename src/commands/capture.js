@@ -1,4 +1,4 @@
-var page = require('webpage').create();
+var page   = require('webpage').create();
 var system = require('system');
 
 var url   = system.args[1];
@@ -18,6 +18,48 @@ page.open(url, function(status) {
             width: width
         };
     }
-    page.render(file);
-    slimer.exit();
+
+    page.includeJs('https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js', function() {
+        var sections = page.evaluate(function() {
+            var sections  = [];
+
+            $('body').find('.block-section').each(function() {
+                var el = $(this);
+                sections.push({
+                    width:  el.width(),
+                    height: el.height(),
+                    left:   parseInt(el.offset().left, 10),
+                    top:    parseInt(el.offset().top, 10),
+                    html:   el.prop('outerHTML')
+                });
+            });
+
+            return sections;
+        });
+
+        var components = page.evaluate(function() {
+            var components  = [];
+
+            $('body').find('.block-component').each(function() {
+                var el = $(this);
+                components.push({
+                    width:  el.width(),
+                    height: el.height(),
+                    left:   parseInt(el.offset().left, 10),
+                    top:    parseInt(el.offset().top, 10),
+                    html:   el.prop('outerHTML')
+                });
+            });
+
+            return components;
+        });
+
+        console.log(JSON.stringify({
+            components: components,
+            sections:   sections
+        }));
+
+        page.render(file);
+        slimer.exit();
+    });
 });
