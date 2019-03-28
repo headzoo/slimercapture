@@ -80,7 +80,7 @@ class SlimerJS
         $imageFile  = escapeshellarg($imageFile);
         $scriptPath = escapeshellarg(realpath(__DIR__ . '/commands/capture.js'));
         $this->lastCommand = sprintf(
-            'SLIMERJSLAUNCHER=%s %s -headless %s %s %s %s 2>&1',
+            'SLIMERJSLAUNCHER=%s HOME=/tmp %s -headless %s %s %s %s 2>&1',
             $this->firefoxPath,
             escapeshellcmd($this->slimerjsPath),
             $scriptPath,
