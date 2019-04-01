@@ -93,6 +93,7 @@ class SlimerJS
      */
     public function capture($url, $imageFile, $width = 1024)
     {
+        $url = str_replace('=', '#@#', $url);
         $scriptPath = realpath(__DIR__ . '/commands/capture.js');
 
         return $this->exec(sprintf(
@@ -115,6 +116,7 @@ class SlimerJS
      */
     public function screenshot($url, $imageFile, $width = 1024)
     {
+        $url = str_replace('=', '#@#', $url);
         $scriptPath = realpath(__DIR__ . '/commands/screenshot.js');
 
         return $this->exec(sprintf(

@@ -8,7 +8,7 @@ const args = arg({
     '--width':  Number
 }, { argv: system.args });
 
-const url   = args['--url'];
+const url   = args['--url'].replace(/#@#/g, '=');
 const file  = args['--image'];
 const width = args['--width'];
 if (!url || !file) {

@@ -2,13 +2,17 @@ const page   = require('webpage').create();
 const system = require('system');
 const arg    = require('arg');
 
+page.onAlert = function(msg) {
+    console.log(msg);
+};
+
 const args = arg({
     '--url':    String,
     '--image':  String,
     '--width':  Number
 }, { argv: system.args });
 
-const url   = args['--url'];
+const url   = args['--url'].replace(/#@#/g, '=');
 const file  = args['--image'];
 const width = args['--width'];
 if (!url || !file) {
@@ -30,13 +34,13 @@ if (!slimer.isExiting()) {
             };
         }
 
-        page.includeJs('https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js', () => {
+        page.includeJs('https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js', function() {
             const sections = page.evaluate(function() {
                 const sections  = [];
                 const variables = [];
 
-                $('body').find('.block-section').each(() => {
-                    const el = $(this);
+                $('body').find('.block-section').each((i, item) => {
+                    const el = $(item);
 
                     const html = el.prop('outerHTML');
                     if (variables.indexOf(html) === -1) {
@@ -60,8 +64,8 @@ if (!slimer.isExiting()) {
                 const components = [];
                 const variables  = [];
 
-                $('body').find('.block-component').each(() => {
-                    const el = $(this);
+                $('body').find('.block-component').each((i, item) => {
+                    const el = $(item);
 
                     const html = el.prop('outerHTML');
                     if (variables.indexOf(html) === -1) {
