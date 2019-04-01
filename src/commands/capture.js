@@ -1,79 +1,93 @@
-var page   = require('webpage').create();
-var system = require('system');
+const page   = require('webpage').create();
+const system = require('system');
+const arg    = require('arg');
 
-var url   = system.args[1];
-var file  = system.args[2];
-var width = system.args[3];
+const args = arg({
+    '--url':    String,
+    '--image':  String,
+    '--width':  Number
+}, { argv: system.args });
+
+const url   = args['--url'];
+const file  = args['--image'];
+const width = args['--width'];
 if (!url || !file) {
-    console.log('Missing file or url');
+    console.error('Missing file or url');
     slimer.exit(1);
 }
 
-page.open(url, function(status) {
-    if (status !== 'success') {
-        slimer.exit(65);
-    }
-    if (width) {
-        page.viewportSize = {
-            width: width
-        };
-    }
+if (!slimer.isExiting()) {
+    page.open(url, (status) => {
+        if (status !== 'success') {
+            console.error(status);
+            slimer.exit(65);
+            return;
+        }
 
-    page.includeJs('https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js', function() {
-        var sections = page.evaluate(function() {
-            var sections  = [];
-            var variables = [];
+        if (width) {
+            page.viewportSize = {
+                width: width
+            };
+        }
 
-            $('body').find('.block-section').each(function() {
-                var el = $(this);
+        page.includeJs('https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js', () => {
+            const sections = page.evaluate(function() {
+                const sections  = [];
+                const variables = [];
 
-                // var variable = el.attr('data-style');
-                var variable = el.prop('outerHTML');
-                if (variables.indexOf(variable) === -1) {
-                    variables.push(variable);
-                    sections.push({
-                        width:  el.width(),
-                        height: el.height(),
-                        left:   parseInt(el.offset().left, 10),
-                        top:    parseInt(el.offset().top, 10),
-                        html:   variable
-                    });
-                }
+                $('body').find('.block-section').each(() => {
+                    const el = $(this);
+
+                    const html = el.prop('outerHTML');
+                    if (variables.indexOf(html) === -1) {
+                        variables.push(html);
+
+                        const offset = el.offset();
+                        sections.push({
+                            width:  el.width(),
+                            height: el.height(),
+                            left:   parseInt(offset.left, 10),
+                            top:    parseInt(offset.top, 10),
+                            html
+                        });
+                    }
+                });
+
+                return sections;
             });
 
-            return sections;
-        });
+            const components = page.evaluate(() => {
+                const components = [];
+                const variables  = [];
 
-        var components = page.evaluate(function() {
-            var components = [];
-            var variables  = [];
+                $('body').find('.block-component').each(() => {
+                    const el = $(this);
 
-            $('body').find('.block-component').each(function() {
-                var el = $(this);
+                    const html = el.prop('outerHTML');
+                    if (variables.indexOf(html) === -1) {
+                        variables.push(html);
 
-                // var variable = el.attr('data-style');
-                var variable = el.prop('outerHTML');
-                if (variables.indexOf(variable) === -1) {
-                    variables.push(variable);
-                    components.push({
-                        width:  el.width(),
-                        height: el.height(),
-                        left:   parseInt(el.offset().left, 10),
-                        top:    parseInt(el.offset().top, 10),
-                        html:   variable
-                    });
-                }
+                        const offset = el.offset();
+                        components.push({
+                            width:  el.width(),
+                            height: el.height(),
+                            left:   parseInt(offset.left, 10),
+                            top:    parseInt(offset.top, 10),
+                            html
+                        });
+                    }
+                });
+
+                return components;
             });
 
-            return components;
+            console.log(JSON.stringify({
+                components: components,
+                sections:   sections
+            }));
+
+            page.render(file);
+            slimer.exit();
         });
-
-        console.log(JSON.stringify({
-            components: components,
-            sections:   sections
-        }));
-
-        page.render(file);
-        slimer.exit();
     });
-});
+}
