@@ -52,6 +52,8 @@ if (!slimer.isExiting()) {
                             height: el.height(),
                             left:   parseInt(offset.left, 10),
                             top:    parseInt(offset.top, 10),
+                            style:  el.data('style'),
+                            block:  el.data('block'),
                             html
                         });
                     }
@@ -77,6 +79,8 @@ if (!slimer.isExiting()) {
                             height: el.height(),
                             left:   parseInt(offset.left, 10),
                             top:    parseInt(offset.top, 10),
+                            style:  el.data('style'),
+                            block:  el.data('block'),
                             html
                         });
                     }
