@@ -34,34 +34,7 @@ if (!slimer.isExiting()) {
             };
         }
 
-        page.includeJs('https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js', function() {
-            const sections = page.evaluate(function() {
-                const sections  = [];
-                const variables = [];
-
-                $('body').find('.block-section').each((i, item) => {
-                    const el = $(item);
-
-                    const html = el.prop('outerHTML');
-                    if (variables.indexOf(html) === -1) {
-                        variables.push(html);
-
-                        const offset = el.offset();
-                        sections.push({
-                            width:  el.width(),
-                            height: el.height(),
-                            left:   parseInt(offset.left, 10),
-                            top:    parseInt(offset.top, 10),
-                            style:  el.data('style'),
-                            block:  el.data('block'),
-                            html
-                        });
-                    }
-                });
-
-                return sections;
-            });
-
+        page.includeJs('https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js', () => {
             const components = page.evaluate(() => {
                 const components = [];
                 const variables  = [];
@@ -89,9 +62,51 @@ if (!slimer.isExiting()) {
                 return components;
             });
 
+            const sections = page.evaluate(() => {
+                const sections  = [];
+                const variables = [];
+
+                $('body').find('.block-section').each((i, item) => {
+                    const el = $(item);
+
+                    const html = el.prop('outerHTML');
+                    if (variables.indexOf(html) === -1) {
+                        variables.push(html);
+
+                        const components = el.find('.block-component');
+                        if (components.length) {
+                            const styles = [];
+                            components.each((y, c) => {
+                                const cel   = $(c);
+                                const style = cel.data('style');
+                                if (style) {
+                                    if (styles.includes(style)) {
+                                        cel.hide();
+                                    }
+                                    styles.push(style);
+                                }
+                            });
+                        }
+
+                        const offset = el.offset();
+                        sections.push({
+                            width:  el.width(),
+                            height: el.height(),
+                            left:   parseInt(offset.left, 10),
+                            top:    parseInt(offset.top, 10),
+                            style:  el.data('style'),
+                            block:  el.data('block'),
+                            html
+                        });
+                    }
+                });
+
+                return sections;
+            });
+
             console.log(JSON.stringify({
-                components: components,
-                sections:   sections
+                components,
+                sections
             }));
 
             page.render(file);
