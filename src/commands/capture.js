@@ -35,33 +35,6 @@ if (!slimer.isExiting()) {
         }
 
         page.includeJs('https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js', () => {
-            const components = page.evaluate(() => {
-                const components = [];
-                const variables  = [];
-
-                $('body').find('.block-component').each((i, item) => {
-                    const el = $(item);
-
-                    const html = el.prop('outerHTML');
-                    if (variables.indexOf(html) === -1) {
-                        variables.push(html);
-
-                        const offset = el.offset();
-                        components.push({
-                            width:  el.width(),
-                            height: el.height(),
-                            left:   parseInt(offset.left, 10),
-                            top:    parseInt(offset.top, 10),
-                            style:  el.data('style'),
-                            block:  el.data('block'),
-                            html
-                        });
-                    }
-                });
-
-                return components;
-            });
-
             const sections = page.evaluate(() => {
                 const sections  = [];
                 const variables = [];
@@ -102,6 +75,33 @@ if (!slimer.isExiting()) {
                 });
 
                 return sections;
+            });
+
+            const components = page.evaluate(() => {
+                const components = [];
+                const variables  = [];
+
+                $('body').find('.block-component').show().each((i, item) => {
+                    const el = $(item);
+
+                    const html = el.prop('outerHTML');
+                    if (variables.indexOf(html) === -1) {
+                        variables.push(html);
+
+                        const offset = el.offset();
+                        components.push({
+                            width:  el.width(),
+                            height: el.height(),
+                            left:   parseInt(offset.left, 10),
+                            top:    parseInt(offset.top, 10),
+                            style:  el.data('style'),
+                            block:  el.data('block'),
+                            html
+                        });
+                    }
+                });
+
+                return components;
             });
 
             console.log(JSON.stringify({
