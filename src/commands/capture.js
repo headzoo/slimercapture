@@ -81,7 +81,7 @@ if (!slimer.isExiting()) {
                 const components = [];
                 const variables  = [];
 
-                $('body').find('.block-component').show().each((i, item) => {
+                $('body').find('.block-component').each((i, item) => {
                     const el = $(item);
 
                     const html = el.prop('outerHTML');
